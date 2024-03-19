@@ -2,6 +2,7 @@ import sweph from "sweph";
 import express, { Express, Request, Response } from "express";
 import { getPosition } from "./api/getPosition";
 import { gethouses } from "./api/getHouses";
+import { getTransits } from "./api/getTransits";
 
 const app: Express = express();
 const port = process.env.PORT || 3601;
@@ -34,6 +35,9 @@ app.post("/position", getPosition);
 
 app.get("/houses", gethouses);
 app.post("/houses", gethouses);
+
+app.get("/transits", getTransits);
+app.post("/transits", getTransits);
 
 app.listen(port, () => {
   console.log(`[Ephemerides]: Server is running at http://localhost:${port}`);

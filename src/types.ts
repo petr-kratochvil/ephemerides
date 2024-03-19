@@ -56,3 +56,13 @@ export interface HousePosition extends Position {
 export interface FormattedHousePosition extends FormattedPosition {
   name: string;
 }
+
+export interface Aspect {
+  name: string;
+  orb: number;
+}
+
+export interface AspectWithPositions extends Aspect {
+  pos1: Position;
+  pos2: Position;
+}

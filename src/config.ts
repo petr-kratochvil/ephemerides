@@ -28,3 +28,50 @@ export const swephConfig = {
   lon: 15,
   houseMethod: "P",
 };
+
+export const aspectsConfig = {
+  aspects: [
+    {
+      name: "conjunction",
+      maxOrb: 15,
+      mediumOrb: 10,
+      diff: 0,
+    },
+    {
+      name: "opposition",
+      maxOrb: 15,
+      mediumOrb: 8,
+      diff: 180,
+    },
+    {
+      name: "square",
+      maxOrb: 10,
+      mediumOrb: 5,
+      diff: 90,
+    },
+    {
+      name: "trine",
+      maxOrb: 10,
+      mediumOrb: 5,
+      diff: 120,
+    },
+    {
+      name: "sextile",
+      maxOrb: 6,
+      mediumOrb: 3.5,
+      diff: 60,
+    },
+    {
+      name: "semiSextile",
+      maxOrb: 3,
+      mediumOrb: 1.5,
+      diff: 30,
+    },
+    {
+      name: "quincunx",
+      maxOrb: 5,
+      mediumOrb: 3.5,
+      diff: 150,
+    },
+  ],
+};
