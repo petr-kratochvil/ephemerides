@@ -1,7 +1,7 @@
 import sweph, { constants } from "sweph";
-import { EphDate } from "../types";
+import { EphDate, HousePosition, PointPosition } from "../types";
 import { swephConfig } from "../config";
-import { expandPosition } from "../utils";
+import { oppositePosition } from "../utils";
 
 export function houses(date: EphDate) {
   const julday_ut = sweph.julday(
@@ -18,27 +18,30 @@ export function houses(date: EphDate) {
     swephConfig.lon,
     swephConfig.houseMethod
   );
+
   const points = {
     AC: calc.data.points[0],
+    IC: oppositePosition(calc.data.points[1]),
+    DC: oppositePosition(calc.data.points[0]),
     MC: calc.data.points[1],
     ARMC: calc.data.points[2],
     vertex: calc.data.points[3],
+    antiVertex: oppositePosition(calc.data.points[3]),
     equatorialAscendant: calc.data.points[4],
     coAscendantWK: calc.data.points[5],
     coAscendantMM: calc.data.points[6],
     polarAscendantMM: calc.data.points[7],
-  };
-  const pointsWithDetail = {};
-  Object.entries(points).forEach(([key, value]) =>
-    Object.assign(pointsWithDetail, {
-      [key]: { position: value, ...expandPosition(value) },
-    })
+  } as Record<string, number>;
+
+  const pointsPositions: PointPosition[] = swephConfig.points.map(
+    (pointName) =>
+      ({ point: pointName, position: points[pointName] } as PointPosition)
   );
+
   return {
-    houses: calc.data.houses.map((pos) => ({
-      position: pos,
-      ...expandPosition(pos),
-    })),
-    points: pointsWithDetail,
+    houses: calc.data.houses.map(
+      (pos, index) => ({ house: index + 1, position: pos } as HousePosition)
+    ),
+    points: pointsPositions,
   };
 }
