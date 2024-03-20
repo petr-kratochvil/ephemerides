@@ -17,11 +17,11 @@ export const swephConfig = {
   ],
   points: [
     "AC",
-    "IC",
-    "DC",
+    // "IC",
+    // "DC",
     "MC",
     "vertex",
-    "antiVertex",
+    // "antiVertex",
     // 'ARMC', 'equatorialAscendant', 'coAscendantWK', 'coAscendantMM',  'polarAscendantMM'
   ],
   lat: 50,
