@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { sw_position } from "../sweph/position";
+import { eph_position } from "../sweph/position";
 import {
   formatBodyPosition,
   formatBodyPositionError,
@@ -8,7 +8,7 @@ import { BodyPositionError } from "../types";
 
 export function getPosition(req: Request, res: Response) {
   try {
-    const positions = sw_position(req.body);
+    const positions = eph_position(req.body);
     res.json(positions.map((p) => formatBodyPosition(p)));
   } catch (error) {
     res.json(formatBodyPositionError(error as BodyPositionError));
