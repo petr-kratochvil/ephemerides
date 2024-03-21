@@ -60,6 +60,7 @@ export interface FormattedHousePosition extends FormattedPosition {
 export interface Aspect {
   name: string;
   orb: number;
+  orbSpeed?: number;
 }
 
 export interface AspectWithPositions extends Aspect {
