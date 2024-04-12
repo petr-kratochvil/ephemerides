@@ -1,2 +1,2 @@
-import * as app  from "./api";
+import * as app from "../api";
 void app;

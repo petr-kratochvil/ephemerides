@@ -1,8 +1,8 @@
 import sweph from "sweph";
 import express, { Express, Request, Response } from "express";
-import { getPosition } from "../endpoints/getPosition";
-import { gethouses } from "../endpoints/getHouses";
-import { getTransits } from "../endpoints/getTransits";
+import { getPosition } from "../src/endpoints/getPosition";
+import { gethouses } from "../src/endpoints/getHouses";
+import { getTransits } from "../src/endpoints/getTransits";
 
 const app: Express = express();
 const port = process.env.PORT || 3601;
@@ -10,21 +10,21 @@ const port = process.env.PORT || 3601;
 // path to ephemeris data
 // For flag SEFLG_MOSEPH, path null can be used
 // sweph.set_ephe_path('null');
-sweph.set_ephe_path(__dirname + "/../../swisseph_files");
+sweph.set_ephe_path(__dirname + "/../swisseph_files");
 
 // Parse JSON request body
 app.use(express.json());
 
 // Handle OPTIONS preflight requests
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  if (req.method === 'OPTIONS') {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  if (req.method === "OPTIONS") {
     res.header("Access-Control-Allow-Headers", "Content-type");
     res.send();
   } else {
     next();
   }
-})
+});
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Ephemerides express server /");
