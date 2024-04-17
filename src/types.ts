@@ -31,14 +31,14 @@ export interface FormattedBodyPosition extends FormattedPosition {
   retrograde: boolean;
 }
 
-export interface BodyPositionError {
-  body: Body;
-  error: string;
+export interface SwephError {
+  body?: number;
+  error?: string;
 }
 
-export interface FormattedBodyPositionError {
-  name: string;
-  error: string;
+export interface FormattedSwephError {
+  body_name?: string;
+  error?: string;
 }
 
 export interface PointPosition extends Position {

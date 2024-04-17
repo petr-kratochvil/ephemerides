@@ -2,15 +2,15 @@ import { Request, Response } from "express";
 import { eph_position } from "../sweph/position";
 import {
   formatBodyPosition,
-  formatBodyPositionError,
+  formatSwephError,
 } from "../format/formatPosition";
-import { BodyPositionError } from "../types";
+import { SwephError } from "../types";
 
 export function getPosition(req: Request, res: Response) {
   try {
     const positions = eph_position(req.body);
     res.json(positions.map((p) => formatBodyPosition(p)));
   } catch (error) {
-    res.json(formatBodyPositionError(error as BodyPositionError));
+    res.status(500).json(formatSwephError(error as SwephError));
   }
 }

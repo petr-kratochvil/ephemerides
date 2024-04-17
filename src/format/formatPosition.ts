@@ -1,14 +1,14 @@
 import { get_planet_name } from "sweph";
 import {
   FormattedBodyPosition,
-  FormattedBodyPositionError,
   BodyPosition,
-  BodyPositionError,
   FormattedPosition,
   HousePosition,
   PointPosition,
   FormattedHousePosition,
   FormattedPointPosition,
+  SwephError,
+  FormattedSwephError,
 } from "../types";
 
 function degMinSec(position: number) {
@@ -40,12 +40,10 @@ export function formatBodyPosition(pos: BodyPosition): FormattedBodyPosition {
   };
 }
 
-export function formatBodyPositionError(
-  pos: BodyPositionError
-): FormattedBodyPositionError {
+export function formatSwephError(error: SwephError): FormattedSwephError {
   return {
-    name: get_planet_name(pos.body),
-    error: pos.error,
+    ...error,
+    body_name: error.body == null ? undefined : get_planet_name(error.body),
   };
 }
 

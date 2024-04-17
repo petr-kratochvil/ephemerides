@@ -1,5 +1,5 @@
 import sweph, { constants } from "sweph";
-import { EphDate, BodyPosition, BodyPositionError } from "../types";
+import { EphDate, BodyPosition, SwephError } from "../types";
 import { swephConfig } from "../config";
 
 export function eph_position(date: EphDate): BodyPosition[] {
@@ -14,7 +14,7 @@ export function eph_position(date: EphDate): BodyPosition[] {
   return swephConfig.bodies.map((body) => {
     const calc = sweph.calc_ut(julday_ut, body, swephConfig.flag);
     if (calc.error) {
-      throw { body, error: calc.error } as BodyPositionError;
+      throw { body, error: calc.error } as SwephError;
     }
     return {
       body,
