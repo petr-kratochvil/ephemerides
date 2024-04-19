@@ -2,7 +2,7 @@ import sweph, { constants } from "sweph";
 import { EphDate, BodyPosition, SwephError } from "../types";
 import { swephConfig } from "../config";
 
-export function eph_position(date: EphDate): BodyPosition[] {
+export function sweph_position(date: EphDate): BodyPosition[] {
   const julday_ut = sweph.julday(
     date.year,
     date.month,

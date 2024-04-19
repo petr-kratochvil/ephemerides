@@ -3,7 +3,7 @@ import { EphDate, HousePosition, PointPosition } from "../types";
 import { swephConfig } from "../config";
 import { oppositePosition } from "../utils";
 
-export function eph_houses(date: EphDate) {
+export function sweph_houses(date: EphDate) {
   const julday_ut = sweph.julday(
     date.year,
     date.month,
