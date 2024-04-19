@@ -7,6 +7,27 @@ export interface EphDate {
   hour: number;
 }
 
+export type BodyId = (typeof swephConfig.bodies)[number];
+export type PointName = (typeof swephConfig.points)[number];
+export type houseNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+
+export interface BodyObject {
+  type: "body";
+  bodyId: BodyId;
+}
+
+export interface PointObject {
+  type: "point";
+  pointName: PointName;
+}
+
+export interface HouseObject {
+  type: "house";
+  houseNumber: houseNumber;
+}
+
+export type EphObject = BodyObject | PointObject | HouseObject;
+
 export interface Position {
   position: number;
 }
@@ -18,43 +39,16 @@ export interface FormattedPosition extends Position {
   seconds: number;
 }
 
-export type Body = (typeof swephConfig.bodies)[number];
-
-export interface BodyPosition extends Position {
-  body: Body;
-  speed: number;
+export interface EphObjectPosition extends Position {
+  object: EphObject;
+  speed?: number;
 }
 
-export interface FormattedBodyPosition extends FormattedPosition {
+export interface FormattedObjectPosition extends FormattedPosition {
   name: string;
-  speed: number;
-  retrograde: boolean;
-}
-
-export interface SwephError {
-  body?: number;
-  error?: string;
-}
-
-export interface FormattedSwephError {
-  body_name?: string;
-  error?: string;
-}
-
-export interface PointPosition extends Position {
-  point: string;
-}
-
-export interface FormattedPointPosition extends FormattedPosition {
-  name: string;
-}
-
-export interface HousePosition extends Position {
-  house: number;
-}
-
-export interface FormattedHousePosition extends FormattedPosition {
-  name: string;
+  type: 'body' | 'point' | 'house';
+  speed?: number;
+  retrograde?: boolean;
 }
 
 export interface Aspect {
@@ -66,4 +60,16 @@ export interface Aspect {
 export interface AspectWithPositions extends Aspect {
   pos1: Position;
   pos2: Position;
+}
+
+// Sweph errors
+
+export interface SwephError {
+  body?: number;
+  error?: string;
+}
+
+export interface FormattedSwephError {
+  body_name?: string;
+  error?: string;
 }

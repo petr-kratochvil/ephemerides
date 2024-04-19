@@ -1,9 +1,9 @@
 import sweph, { constants } from "sweph";
-import { EphDate, HousePosition, PointPosition } from "../types";
+import { EphDate, EphObject, EphObjectPosition } from "../types";
 import { swephConfig } from "../config";
 import { oppositePosition } from "../utils";
 
-export function sweph_houses(date: EphDate) {
+export function sweph_houses(date: EphDate): EphObjectPosition[] {
   const julday_ut = sweph.julday(
     date.year,
     date.month,
@@ -33,15 +33,15 @@ export function sweph_houses(date: EphDate) {
     polarAscendantMM: calc.data.points[7],
   } as Record<string, number>;
 
-  const pointsPositions: PointPosition[] = swephConfig.points.map(
-    (pointName) =>
-      ({ point: pointName, position: points[pointName] } as PointPosition)
-  );
+  const pointsPositions = swephConfig.points.map((pointName) => ({
+    object: { type: "point", pointName } as EphObject,
+    position: points[pointName],
+  }));
 
-  return {
-    houses: calc.data.houses.map(
-      (pos, index) => ({ house: index + 1, position: pos } as HousePosition)
-    ),
-    points: pointsPositions,
-  };
+  return calc.data.houses
+    .map((pos, index) => ({
+      object: { type: "house", houseNumber: index + 1 } as EphObject,
+      position: pos,
+    }))
+    .concat(pointsPositions);
 }

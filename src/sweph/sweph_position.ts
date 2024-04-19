@@ -1,8 +1,8 @@
 import sweph, { constants } from "sweph";
-import { EphDate, BodyPosition, SwephError } from "../types";
+import { EphDate, EphObjectPosition, SwephError } from "../types";
 import { swephConfig } from "../config";
 
-export function sweph_position(date: EphDate): BodyPosition[] {
+export function sweph_position(date: EphDate): EphObjectPosition[] {
   const julday_ut = sweph.julday(
     date.year,
     date.month,
@@ -17,9 +17,9 @@ export function sweph_position(date: EphDate): BodyPosition[] {
       throw { body, error: calc.error } as SwephError;
     }
     return {
-      body,
+      object: { type: "body", bodyId: body },
       position: calc.data[0],
       speed: calc.data[3],
-    } as BodyPosition;
+    } as EphObjectPosition;
   });
 }

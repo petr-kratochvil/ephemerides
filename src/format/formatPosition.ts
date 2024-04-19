@@ -1,14 +1,10 @@
 import { get_planet_name } from "sweph";
 import {
-  FormattedBodyPosition,
-  BodyPosition,
+  EphObjectPosition,
   FormattedPosition,
-  HousePosition,
-  PointPosition,
-  FormattedHousePosition,
-  FormattedPointPosition,
   SwephError,
   FormattedSwephError,
+  FormattedObjectPosition,
 } from "../types";
 
 function degMinSec(position: number) {
@@ -31,36 +27,37 @@ export function formatPosition(position: number): FormattedPosition {
   };
 }
 
-export function formatBodyPosition(pos: BodyPosition): FormattedBodyPosition {
-  return {
-    name: get_planet_name(pos.body),
-    speed: pos.speed,
-    retrograde: pos.speed < 0,
-    ...formatPosition(pos.position),
-  };
+export function formatObjectPosition(
+  pos: EphObjectPosition
+): FormattedObjectPosition {
+  if ("bodyId" in pos.object) {
+    return {
+      type: 'body',
+      ...formatPosition(pos.position),
+      name: get_planet_name(pos.object.bodyId),
+      retrograde:
+        "speed" in pos && typeof pos.speed === "number" && pos.speed < 0,
+      speed:
+        "speed" in pos && typeof pos.speed === "number" ? pos.speed : 0,
+    };
+  } else if ("houseNumber" in pos.object) {
+    return {
+      type: 'house',
+      name: `House ${pos.object.houseNumber}`,
+      ...formatPosition(pos.position),
+    };
+  } else {
+    return {
+      type: 'point',
+      name: pos.object.pointName,
+      ...formatPosition(pos.position),
+    };
+  }
 }
 
 export function formatSwephError(error: SwephError): FormattedSwephError {
   return {
     ...error,
     body_name: error.body == null ? undefined : get_planet_name(error.body),
-  };
-}
-
-export function formatHousePosition(
-  pos: HousePosition
-): FormattedHousePosition {
-  return {
-    name: `House ${pos.house}`,
-    ...formatPosition(pos.position),
-  };
-}
-
-export function formatPointPosition(
-  pos: PointPosition
-): FormattedPointPosition {
-  return {
-    name: pos.point,
-    ...formatPosition(pos.position),
   };
 }

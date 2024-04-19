@@ -1,5 +1,15 @@
 import { constants } from "sweph";
 
+const points = [
+  "AC",
+  // "IC",
+  // "DC",
+  "MC",
+  "vertex",
+  // "antiVertex",
+  // 'ARMC', 'equatorialAscendant', 'coAscendantWK', 'coAscendantMM',  'polarAscendantMM'
+] as const;
+
 export const swephConfig = {
   // flag: constants.SEFLG_MOSEPH;
   flag: constants.SEFLG_SPEED,
@@ -15,15 +25,7 @@ export const swephConfig = {
     constants.SE_NEPTUNE,
     constants.SE_PLUTO,
   ],
-  points: [
-    "AC",
-    // "IC",
-    // "DC",
-    "MC",
-    "vertex",
-    // "antiVertex",
-    // 'ARMC', 'equatorialAscendant', 'coAscendantWK', 'coAscendantMM',  'polarAscendantMM'
-  ],
+  points,
   lat: 50,
   lon: 15,
   houseMethod: "P",
