@@ -33,15 +33,23 @@ export function sweph_houses(date: EphDate): EphObjectPosition[] {
     polarAscendantMM: calc.data.points[7],
   } as Record<string, number>;
 
-  const pointsPositions = swephConfig.points.map((pointName) => ({
-    object: { type: "point", pointName } as EphObject,
-    position: points[pointName],
-  }));
+  const pointsPositions = swephConfig.points.map(
+    (pointName) =>
+      ({
+        type: "point",
+        pointName,
+        position: points[pointName],
+      } as EphObjectPosition)
+  );
 
   return calc.data.houses
-    .map((pos, index) => ({
-      object: { type: "house", houseNumber: index + 1 } as EphObject,
-      position: pos,
-    }))
+    .map(
+      (pos, index) =>
+        ({
+          type: "house",
+          houseNumber: index + 1,
+          position: pos,
+        } as EphObjectPosition)
+    )
     .concat(pointsPositions);
 }

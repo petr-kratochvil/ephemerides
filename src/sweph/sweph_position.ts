@@ -17,7 +17,8 @@ export function sweph_position(date: EphDate): EphObjectPosition[] {
       throw { body, error: calc.error } as SwephError;
     }
     return {
-      object: { type: "body", bodyId: body },
+      type: "body",
+      bodyId: body,
       position: calc.data[0],
       speed: calc.data[3],
     } as EphObjectPosition;

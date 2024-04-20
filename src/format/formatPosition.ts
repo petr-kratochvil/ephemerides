@@ -30,29 +30,32 @@ export function formatPosition(position: number): FormattedPosition {
 export function formatObjectPosition(
   pos: EphObjectPosition
 ): FormattedObjectPosition {
-  if ("bodyId" in pos.object) {
-    return {
-      type: 'body',
-      ...formatPosition(pos.position),
-      name: get_planet_name(pos.object.bodyId),
-      retrograde:
-        "speed" in pos && typeof pos.speed === "number" && pos.speed < 0,
-      speed:
-        "speed" in pos && typeof pos.speed === "number" ? pos.speed : 0,
-    };
-  } else if ("houseNumber" in pos.object) {
-    return {
-      type: 'house',
-      name: `House ${pos.object.houseNumber}`,
-      ...formatPosition(pos.position),
-    };
-  } else {
-    return {
-      type: 'point',
-      name: pos.object.pointName,
-      ...formatPosition(pos.position),
-    };
+  const result: Partial<FormattedObjectPosition> = {
+    ...pos,
+    ...formatPosition(pos.position),
+  };
+  if (pos.type === "body") {
+    result.name = get_planet_name(pos.bodyId);
+    if ("speed" in pos && typeof pos.speed === "number") {
+      result.retrograde = pos.speed < 0;
+      result.speed = pos.speed;
+    }
+  } else if (pos.type === "house") {
+    let ordinal = 'st';
+    if (pos.houseNumber > 1) {
+      ordinal = 'nd';
+    }
+    if (pos.houseNumber > 2) {
+      ordinal = 'rd';
+    }
+    if (pos.houseNumber > 3) {
+      ordinal = 'th';
+    }
+    result.name = `${pos.houseNumber}${ordinal} house`;
+  } else if (pos.type === "point") {
+    result.name = pos.pointName;
   }
+  return result as FormattedObjectPosition;
 }
 
 export function formatSwephError(error: SwephError): FormattedSwephError {

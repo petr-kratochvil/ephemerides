@@ -32,6 +32,17 @@ export interface Position {
   position: number;
 }
 
+interface EphObjectPositionInt extends Position {
+  speed?: number;
+}
+
+export type EphObjectPosition = EphObjectPositionInt & EphObject;
+let a : EphObjectPosition = {
+  position: 1,
+  type: 'house',
+  houseNumber: 1,
+}
+
 export interface FormattedPosition extends Position {
   sign: number;
   degrees: number;
@@ -39,17 +50,14 @@ export interface FormattedPosition extends Position {
   seconds: number;
 }
 
-export interface EphObjectPosition extends Position {
-  object: EphObject;
-  speed?: number;
-}
-
-export interface FormattedObjectPosition extends FormattedPosition {
+interface FormattedObjectPositionInt extends FormattedPosition {
   name: string;
   type: 'body' | 'point' | 'house';
   speed?: number;
   retrograde?: boolean;
 }
+
+export type FormattedObjectPosition = FormattedObjectPositionInt & EphObject;
 
 export interface Aspect {
   name: string;
