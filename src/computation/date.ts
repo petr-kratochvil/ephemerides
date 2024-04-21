@@ -1,0 +1,12 @@
+import { EphDate } from "../types";
+
+export function addDays(date: EphDate, days: number): EphDate {
+  const originDate = new Date(date.year, date.month - 1, date.day);
+  originDate.setDate(originDate.getDate() + days);
+  return {
+    year: originDate.getFullYear(),
+    month: originDate.getMonth(),
+    day: originDate.getDay(),
+    hour: date.hour,
+  };
+}
