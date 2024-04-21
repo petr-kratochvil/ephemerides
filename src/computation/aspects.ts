@@ -27,11 +27,10 @@ function aspectPosition(
   pos1: number,
   pos2: number,
   aspectDiff: number,
-  pos1Speed: number
+  // pos1Speed: number // speed is not used - the nearest position is selected
 ) {
   let option1 = positionAdd(pos2, aspectDiff);
   let option2 = positionAdd(pos2, -aspectDiff);
-  let speedSign = Math.sign(pos1Speed);
     // Math.abs can return -0
     let distance1 = positionDifference(pos1, option1);
     let distance2 = positionDifference(pos1, option2);
@@ -50,7 +49,7 @@ function orbSpeed(
   aspectDiff: number,
   pos1Speed: number
 ) {
-  let diff = aspectPosition(pos1, pos2, aspectDiff, pos1Speed) - pos1;
+  let diff = aspectPosition(pos1, pos2, aspectDiff) - pos1;
   if (diff < 0) diff += 360;
   if (diff <= 0 || diff > 180) {
     return pos1Speed;
