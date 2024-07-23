@@ -2,8 +2,8 @@ import { constants } from "sweph";
 
 const points = [
   "AC",
-  // "IC",
-  // "DC",
+  "IC",
+  "DC",
   "MC",
   "vertex",
   // "antiVertex",

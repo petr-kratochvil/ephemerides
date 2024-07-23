@@ -10,7 +10,7 @@ export function transits(baseDate: EphDate, transitDate: EphDate) {
   const basePosition = [
     ...sweph_position(baseDate).map(formatObjectPosition),
     ...sweph_houses(baseDate)
-      .filter((pos) => pos.type === "point")
+      .filter(pos => !(pos.type == 'house' && [1,4,7,10].includes(pos.houseNumber)))
       .map(formatObjectPosition),
   ];
   const transitPosition = sweph_position(transitDate).map(formatObjectPosition);
