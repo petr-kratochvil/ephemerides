@@ -1,9 +1,9 @@
 import sweph, { constants } from "sweph";
-import { EphDate, EphObject, EphObjectPosition } from "../types";
+import { EphDate, EphObject, EphObjectPosition, GeoCoordinates } from "../types";
 import { swephConfig } from "../config";
 import { oppositePosition } from "../utils";
 
-export function sweph_houses(date: EphDate): EphObjectPosition[] {
+export function sweph_houses(date: EphDate, geoCoordinates?: GeoCoordinates): EphObjectPosition[] {
   const julday_ut = sweph.julday(
     date.year,
     date.month,
@@ -14,8 +14,8 @@ export function sweph_houses(date: EphDate): EphObjectPosition[] {
 
   const calc = sweph.houses(
     julday_ut,
-    swephConfig.lat,
-    swephConfig.lon,
+    geoCoordinates?.lat ?? swephConfig.lat,
+    geoCoordinates?.lon ?? swephConfig.lon,
     swephConfig.houseMethod
   );
 

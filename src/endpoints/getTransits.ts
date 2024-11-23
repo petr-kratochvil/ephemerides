@@ -7,7 +7,8 @@ export function getTransits(req: Request, res: Response) {
   try {
     const baseDate = req.body.baseDate;
     const transitDate = req.body.transitDate;
-    const result = transits(baseDate, transitDate);
+    const baseDateCoordinates = req.body.baseDateCoordinates;
+    const result = transits(baseDate, transitDate, baseDateCoordinates);
     res.json(result);
   } catch (error) {
     res.status(500).json(formatSwephError(error as SwephError));

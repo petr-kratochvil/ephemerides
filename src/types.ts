@@ -7,6 +7,11 @@ export interface EphDate {
   hour: number;
 }
 
+export interface GeoCoordinates {
+  lat: number;
+  lon: number;
+}
+
 export type BodyId = (typeof swephConfig.bodies)[number];
 export type PointName = (typeof swephConfig.points)[number];
 export type houseNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;

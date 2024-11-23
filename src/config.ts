@@ -26,8 +26,9 @@ export const swephConfig = {
     constants.SE_PLUTO,
   ],
   points,
-  lat: 50,
-  lon: 15,
+  // default birth place is Prague
+  lat: 50.075,
+  lon: 14.437,
   houseMethod: "P",
 };
 

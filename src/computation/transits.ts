@@ -1,4 +1,4 @@
-import { EphDate } from "../types";
+import { EphDate, GeoCoordinates } from "../types";
 import { sweph_position } from "../sweph/sweph_position";
 import { aspects } from "./aspects";
 import {
@@ -6,10 +6,10 @@ import {
 } from "../format/formatPosition";
 import { sweph_houses } from "../sweph/sweph_houses";
 
-export function transits(baseDate: EphDate, transitDate: EphDate) {
+export function transits(baseDate: EphDate, transitDate: EphDate, baseDateCoordinates?: GeoCoordinates) {
   const basePosition = [
     ...sweph_position(baseDate).map(formatObjectPosition),
-    ...sweph_houses(baseDate)
+    ...sweph_houses(baseDate, baseDateCoordinates)
       .filter(pos => !(pos.type == 'house' && [1,4,7,10].includes(pos.houseNumber)))
       .map(formatObjectPosition),
   ];
