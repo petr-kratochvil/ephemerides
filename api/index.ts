@@ -17,13 +17,20 @@ app.use(express.json());
 
 // Handle OPTIONS preflight requests
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  const origin = typeof req.headers.origin === 'string' ? req.headers.origin : "*";
+  
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Vary", "Origin");
+
   if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Headers", "Content-type");
-    res.send();
-  } else {
-    next();
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.writeHead(204);
+    res.end();
+    return;
   }
+
+  next();
 });
 
 app.get("/", (req: Request, res: Response) => {
@@ -39,8 +46,12 @@ app.post("/houses", gethouses);
 app.get("/transits", getTransits);
 app.post("/transits", getTransits);
 
-app.listen(port, () => {
-  console.log(`[Ephemerides]: Server is running at http://localhost:${port}`);
-});
+// Only run app.listen when running locally.
+// Vercel handles the server binding automatically in production.
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`[Ephemerides]: Server is running at http://localhost:${port}`);
+  });
+}
 
 module.exports = app;
