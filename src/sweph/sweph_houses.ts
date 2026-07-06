@@ -1,9 +1,17 @@
 import sweph, { constants } from "sweph";
-import { EphDate, EphObject, EphObjectPosition, GeoCoordinates } from "../types";
+import {
+  JsonDate,
+  EphObject,
+  EphObjectPosition,
+  GeoCoordinates,
+} from "../types";
 import { swephConfig } from "../config";
 import { oppositePosition } from "../utils";
 
-export function sweph_houses(date: EphDate, geoCoordinates?: GeoCoordinates): EphObjectPosition[] {
+export function sweph_houses(
+  date: JsonDate,
+  geoCoordinates?: GeoCoordinates
+): EphObjectPosition[] {
   const julday_ut = sweph.julday(
     date.year,
     date.month,

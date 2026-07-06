@@ -1,6 +1,6 @@
 import { swephConfig } from "./config";
 
-export interface EphDate {
+export interface JsonDate {
   year: number;
   month: number;
   day: number;
@@ -14,7 +14,7 @@ export interface GeoCoordinates {
 
 export type BodyId = (typeof swephConfig.bodies)[number];
 export type PointName = (typeof swephConfig.points)[number];
-export type houseNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+export type HouseNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
 export interface BodyObject {
   type: "body";
@@ -28,7 +28,7 @@ export interface PointObject {
 
 export interface HouseObject {
   type: "house";
-  houseNumber: houseNumber;
+  houseNumber: HouseNumber;
 }
 
 export type EphObject = BodyObject | PointObject | HouseObject;

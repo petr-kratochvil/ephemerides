@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { sweph_houses } from "../sweph/sweph_houses";
+import { sweph_houses } from "../sweph";
 import {
   formatObjectPosition,
   formatSwephError,

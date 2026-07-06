@@ -1,16 +1,16 @@
 import sweph, { constants } from "sweph";
-import { BodyId, EphDate, EphObjectPosition, SwephError } from "../types";
+import { BodyId, JsonDate, EphObjectPosition, SwephError } from "../types";
 import { swephConfig } from "../config";
 
-export function sweph_position(date: EphDate): EphObjectPosition[] {
-  const julday_ut = get_julday(date);
+export function sweph_position(date: JsonDate): EphObjectPosition[] {
+  const julday_ut = sweph_get_julday(date);
 
   return swephConfig.bodies.map((body) => {
-   return sweph_body_position(julday_ut, body);
+    return sweph_body_position(julday_ut, body);
   });
 }
 
-export function get_julday(date: EphDate): number {
+export function sweph_get_julday(date: JsonDate): number {
   return sweph.julday(
     date.year,
     date.month,

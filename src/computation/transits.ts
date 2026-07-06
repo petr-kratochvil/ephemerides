@@ -1,12 +1,14 @@
-import { EphDate, GeoCoordinates } from "../types";
-import { sweph_position } from "../sweph/sweph_position";
+import { JsonDate, GeoCoordinates } from "../types";
+import { sweph_position } from "../sweph";
 import { aspects } from "./aspects";
-import {
-  formatObjectPosition,
-} from "../format/formatPosition";
-import { sweph_houses } from "../sweph/sweph_houses";
+import { formatObjectPosition } from "../format/formatPosition";
+import { sweph_houses } from "../sweph";
 
-export function transits(baseDate: EphDate, transitDate: EphDate, baseDateCoordinates?: GeoCoordinates) {
+export function transits(
+  baseDate: JsonDate,
+  transitDate: JsonDate,
+  baseDateCoordinates?: GeoCoordinates
+) {
   const basePosition = [
     ...sweph_position(baseDate).map(formatObjectPosition),
     ...sweph_houses(baseDate, baseDateCoordinates)
