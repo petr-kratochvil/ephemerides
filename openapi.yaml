@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: Ephemerides API
+  description: >-
+    Astrological ephemeris calculations (planet positions, houses, transits)
+    backed by the Swiss Ephemeris (`sweph`) library.
+  version: "1.0.0"
+servers:
+  - url: http://localhost:3601
+    description: Local dev server (default port, overridable via PORT env var)
+
+paths:
+  /:
+    get:
+      summary: Health check
+      operationId: getRoot
+      responses:
+        "200":
+          description: Server is up
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ephemerides express server /"
+
+  /position:
+    post:
+      summary: Get planetary body positions for a date
+      operationId: getPosition
+      requestBody:
+        $ref: "#/components/requestBodies/JsonDateBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/PositionResponse"
+        "500":
+          $ref: "#/components/responses/SwephErrorResponse"
+
+  /houses:
+    post:
+      summary: Get house cusps and chart points (AC/IC/DC/MC/vertex) for a date
+      operationId: getHouses
+      description: >-
+        Not currently called by the frontend; kept for future use. Body
+        naming mirrors POST /transits (`baseDate` / `baseDateCoordinates`).
+        `baseDateCoordinates` is optional; when omitted, houses are computed
+        for the default location configured in `swephConfig` (Prague:
+        lat 50.075, lon 14.437).
+      requestBody:
+        $ref: "#/components/requestBodies/HousesBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/HousesResponse"
+        "500":
+          $ref: "#/components/responses/SwephErrorResponse"
+
+  /transits:
+    post:
+      summary: Get aspects between a transit date's planets and a base chart
+      operationId: getTransits
+      description: >-
+        Computes the base chart's planet positions plus its houses (excluding
+        the angular house cusps 1/4/7/10, which duplicate AC/IC/DC/MC), then
+        finds aspects between the transit date's planet positions and that
+        base chart.
+      requestBody:
+        $ref: "#/components/requestBodies/TransitsBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/TransitsResponse"
+        "500":
+          $ref: "#/components/responses/SwephErrorResponse"
+
+components:
+  requestBodies:
+    JsonDateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/JsonDate"
+
+    TransitsBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [baseDate, transitDate]
+            properties:
+              baseDate:
+                $ref: "#/components/schemas/JsonDate"
+              transitDate:
+                $ref: "#/components/schemas/JsonDate"
+              baseDateCoordinates:
+                $ref: "#/components/schemas/GeoCoordinates"
+
+    HousesBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [baseDate]
+            properties:
+              baseDate:
+                $ref: "#/components/schemas/JsonDate"
+              baseDateCoordinates:
+                $ref: "#/components/schemas/GeoCoordinates"
+
+  responses:
+    PositionResponse:
+      description: Array of formatted planetary body positions
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/BodyPosition"
+
+    HousesResponse:
+      description: Array of formatted house cusps and chart points
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              oneOf:
+                - $ref: "#/components/schemas/HousePosition"
+                - $ref: "#/components/schemas/PointPosition"
+              discriminator:
+                propertyName: type
+                mapping:
+                  house: "#/components/schemas/HousePosition"
+                  point: "#/components/schemas/PointPosition"
+
+    TransitsResponse:
+      description: Array of aspects found between the transit and base chart positions
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AspectWithPositions"
+
+    SwephErrorResponse:
+      description: Calculation error from the Swiss Ephemeris library
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FormattedSwephError"
+
+  schemas:
+    JsonDate:
+      type: object
+      description: Calendar date/time (Gregorian), UT, used as input to ephemeris calculations.
+      required: [year, month, day, hour]
+      properties:
+        year:
+          type: integer
+          example: 2024
+        month:
+          type: integer
+          minimum: 1
+          maximum: 12
+          example: 2
+        day:
+          type: integer
+          minimum: 1
+          maximum: 31
+          example: 6
+        hour:
+          type: number
+          description: Decimal hour (e.g. 13.5 = 13:30)
+          example: 13
+
+    GeoCoordinates:
+      type: object
+      required: [lat, lon]
+      properties:
+        lat:
+          type: number
+          example: 50.075
+        lon:
+          type: number
+          example: 14.437
+
+    BodyId:
+      type: integer
+      description: Swiss Ephemeris planet/body constant
+      enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      x-enum-varnames:
+        - SE_SUN
+        - SE_MOON
+        - SE_MERCURY
+        - SE_VENUS
+        - SE_MARS
+        - SE_JUPITER
+        - SE_SATURN
+        - SE_URANUS
+        - SE_NEPTUNE
+        - SE_PLUTO
+
+    PointName:
+      type: string
+      enum: [AC, IC, DC, MC, vertex]
+
+    HouseNumber:
+      type: integer
+      minimum: 1
+      maximum: 12
+
+    PositionFields:
+      type: object
+      description: Common fields added by the ecliptic-longitude formatter.
+      required: [position, sign, degrees, minutes, seconds, name, type]
+      properties:
+        position:
+          type: number
+          description: Raw ecliptic longitude in degrees [0, 360)
+        sign:
+          type: integer
+          description: Zodiac sign number, 1 (Aries) through 12 (Pisces)
+          minimum: 1
+          maximum: 12
+        degrees:
+          type: integer
+          description: Degrees within the sign [0, 29]
+        minutes:
+          type: integer
+          minimum: 0
+          maximum: 59
+        seconds:
+          type: integer
+          minimum: 0
+          maximum: 59
+        name:
+          type: string
+          description: Human-readable name (planet name, house ordinal, or point name)
+
+    BodyPosition:
+      allOf:
+        - $ref: "#/components/schemas/PositionFields"
+        - type: object
+          required: [type, bodyId]
+          properties:
+            type:
+              type: string
+              enum: [body]
+            bodyId:
+              $ref: "#/components/schemas/BodyId"
+            speed:
+              type: number
+              description: Daily motion in degrees; present because SEFLG_SPEED is always used
+            retrograde:
+              type: boolean
+              description: "true if speed < 0"
+
+    HousePosition:
+      allOf:
+        - $ref: "#/components/schemas/PositionFields"
+        - type: object
+          required: [type, houseNumber]
+          properties:
+            type:
+              type: string
+              enum: [house]
+            houseNumber:
+              $ref: "#/components/schemas/HouseNumber"
+
+    PointPosition:
+      allOf:
+        - $ref: "#/components/schemas/PositionFields"
+        - type: object
+          required: [type, pointName]
+          properties:
+            type:
+              type: string
+              enum: [point]
+            pointName:
+              $ref: "#/components/schemas/PointName"
+
+    FormattedObjectPosition:
+      oneOf:
+        - $ref: "#/components/schemas/BodyPosition"
+        - $ref: "#/components/schemas/HousePosition"
+        - $ref: "#/components/schemas/PointPosition"
+      discriminator:
+        propertyName: type
+        mapping:
+          body: "#/components/schemas/BodyPosition"
+          house: "#/components/schemas/HousePosition"
+          point: "#/components/schemas/PointPosition"
+
+    AspectWithPositions:
+      type: object
+      description: >-
+        An astrological aspect found between two chart positions. `pos1` and
+        `pos2` carry the full formatted position objects (body/house/point) of
+        the transit and base-chart members of the pair, respectively.
+      required: [name, orb, pos1, pos2]
+      properties:
+        name:
+          type: string
+          enum:
+            [
+              conjunction,
+              opposition,
+              square,
+              trine,
+              sextile,
+              semiSextile,
+              quincunx,
+            ]
+        orb:
+          type: number
+          description: Absolute difference in degrees between the exact aspect angle and the actual angle
+        orbSpeed:
+          type: number
+          description: >-
+            Present when pos1 has a speed (i.e. pos1 is a body). Positive
+            means the orb is widening (aspect weakening), negative means it
+            is tightening (aspect strengthening).
+        pos1:
+          $ref: "#/components/schemas/FormattedObjectPosition"
+        pos2:
+          $ref: "#/components/schemas/FormattedObjectPosition"
+
+    FormattedSwephError:
+      type: object
+      properties:
+        body_name:
+          type: string
+          description: Planet name resolved from the failing body id, if known
+        error:
+          type: string
+          description: Error message from the Swiss Ephemeris library
