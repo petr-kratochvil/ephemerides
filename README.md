@@ -1,0 +1,34 @@
+# Ephemerides
+
+Express API wrapping the [Swiss Ephemeris](https://www.astro.com/swisseph/) (`sweph`) library — planetary body positions, house cusps/chart points, and transit aspects.
+
+Endpoints: `POST /position`, `POST /houses`, `POST /transits`. Full request/response shapes are in [`openapi.yaml`](./openapi.yaml).
+
+Deployed on Vercel via `api/index.ts` (see `vercel.json`); the same Express app also runs standalone from `src/index.ts` for local dev and Docker.
+
+## Run locally (Node)
+
+```bash
+npm install
+npm run dev     # ts-node + nodemon, watches src/
+```
+
+Server listens on `http://localhost:3601` (override with `PORT`).
+
+## Run with Docker
+
+The image copies a pre-built `build/` directory rather than compiling inside the container, so build first:
+
+```bash
+npm install
+npm run build
+```
+
+Then build and run the image:
+
+```bash
+docker build -t ephemerides .
+docker run -p 3601:3601 ephemerides
+```
+
+The API is now available at `http://localhost:3601`. To use a different port:

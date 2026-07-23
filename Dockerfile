@@ -24,11 +24,7 @@ COPY --chown=node:node build/ .
 
 COPY --chown=node:node swisseph_files/ ../swisseph_files
 
-RUN export PORT="3601"
-
-RUN ls -la /home/node
-RUN ls -la /home/node/app
-RUN ls -la /home/node/app/api
+ENV PORT="3601"
 
 EXPOSE $PORT
 
