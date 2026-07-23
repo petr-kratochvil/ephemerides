@@ -31,14 +31,14 @@ function aspectPosition(
 ) {
   let option1 = positionAdd(pos2, aspectDiff);
   let option2 = positionAdd(pos2, -aspectDiff);
-    // Math.abs can return -0
-    let distance1 = positionDifference(pos1, option1);
-    let distance2 = positionDifference(pos1, option2);
-    if (distance1 < distance2) {
-      return option1;
-    } else {
-      return option2;
-    }
+  // Math.abs can return -0
+  let distance1 = positionDifference(pos1, option1);
+  let distance2 = positionDifference(pos1, option2);
+  if (distance1 < distance2) {
+    return option1;
+  } else {
+    return option2;
+  }
 }
 
 // Positive orbSpeed means aspect orb is increasing, aspect is getting weaker
@@ -47,7 +47,7 @@ function orbSpeed(
   pos1: number,
   pos2: number,
   aspectDiff: number,
-  pos1Speed: number
+  pos1Speed: number,
 ) {
   let diff = aspectPosition(pos1, pos2, aspectDiff) - pos1;
   if (diff < 0) diff += 360;
@@ -58,10 +58,10 @@ function orbSpeed(
   }
 }
 
-export function aspect(
-  pos1: Position,
-  pos2: Position,
-  useMaxOrb = false
+export function aspect<T extends Position>(
+  pos1: T,
+  pos2: T,
+  useMaxOrb = false,
 ): Aspect | null {
   const diff = positionDifference(pos1.position, pos2.position);
   for (const aspectDefinition of aspectsConfig.aspects) {
@@ -78,7 +78,7 @@ export function aspect(
           pos1.position,
           pos2.position,
           aspectDefinition.diff,
-          pos1.speed
+          pos1.speed,
         );
       }
       return result;
@@ -87,11 +87,11 @@ export function aspect(
   return null;
 }
 
-export function aspects(
-  chart1: Position[],
-  chart2: Position[]
-): AspectWithPositions[] {
-  const result: AspectWithPositions[] = [];
+export function aspects<T extends Position>(
+  chart1: T[],
+  chart2: T[],
+): AspectWithPositions<T>[] {
+  const result: AspectWithPositions<T>[] = [];
   for (const pos1 of chart1) {
     for (const pos2 of chart2) {
       const posAspect = aspect(pos1, pos2);

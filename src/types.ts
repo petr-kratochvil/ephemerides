@@ -42,11 +42,6 @@ interface EphObjectPositionInt extends Position {
 }
 
 export type EphObjectPosition = EphObjectPositionInt & EphObject;
-let a : EphObjectPosition = {
-  position: 1,
-  type: 'house',
-  houseNumber: 1,
-}
 
 export interface FormattedPosition extends Position {
   sign: number;
@@ -57,7 +52,7 @@ export interface FormattedPosition extends Position {
 
 interface FormattedObjectPositionInt extends FormattedPosition {
   name: string;
-  type: 'body' | 'point' | 'house';
+  type: "body" | "point" | "house";
   speed?: number;
   retrograde?: boolean;
 }
@@ -70,9 +65,11 @@ export interface Aspect {
   orbSpeed?: number;
 }
 
-export interface AspectWithPositions extends Aspect {
-  pos1: Position;
-  pos2: Position;
+export interface AspectWithPositions<
+  T extends Position = Position,
+> extends Aspect {
+  pos1: T;
+  pos2: T;
 }
 
 // Sweph errors
