@@ -47,9 +47,19 @@ app.post("/transits", getTransits);
 // Only run app.listen when running locally.
 // Vercel handles the server binding automatically in production.
 if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`[Ephemerides]: Server is running at http://localhost:${port}`);
   });
+
+  const shutdown = () => {
+    console.log("[Ephemerides]: Shutting down, draining in-flight requests...");
+    server.close(() => process.exit(0));
+    // Force exit if some connection never finishes.
+    setTimeout(() => process.exit(1), 10_000).unref();
+  };
+
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 }
 
 export default app;
