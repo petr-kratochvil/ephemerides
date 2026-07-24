@@ -62,9 +62,10 @@ export function aspect<T extends Position>(
   pos1: T,
   pos2: T,
   useMaxOrb = false,
+  aspectDefinitions: typeof aspectsConfig.aspects = aspectsConfig.aspects,
 ): Aspect | null {
   const diff = positionDifference(pos1.position, pos2.position);
-  for (const aspectDefinition of aspectsConfig.aspects) {
+  for (const aspectDefinition of aspectDefinitions) {
     const orb = Math.abs(diff - aspectDefinition.diff);
     if (
       orb < (useMaxOrb ? aspectDefinition.maxOrb : aspectDefinition.mediumOrb)
@@ -90,11 +91,12 @@ export function aspect<T extends Position>(
 export function aspects<T extends Position>(
   chart1: T[],
   chart2: T[],
+  aspectDefinitions: typeof aspectsConfig.aspects = aspectsConfig.aspects,
 ): AspectWithPositions<T>[] {
   const result: AspectWithPositions<T>[] = [];
   for (const pos1 of chart1) {
     for (const pos2 of chart2) {
-      const posAspect = aspect(pos1, pos2);
+      const posAspect = aspect(pos1, pos2, false, aspectDefinitions);
       if (posAspect !== null) {
         result.push({ ...posAspect, pos1, pos2 });
       }
