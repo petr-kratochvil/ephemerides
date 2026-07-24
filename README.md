@@ -18,8 +18,8 @@ Server listens on `http://localhost:3601` (override with `PORT`).
 ## Run with Docker
 
 ```bash
-docker build -t ephemerides .
-docker run -p 3601:3601 ephemerides
+npm run docker:build
+npm run docker:run
 ```
 
 The API is now available at `http://localhost:3601`.
