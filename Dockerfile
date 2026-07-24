@@ -19,6 +19,8 @@ RUN npm run build
 
 FROM node:24-alpine
 
+RUN apk add --no-cache tini
+
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
@@ -33,4 +35,5 @@ ENV PORT="3601"
 
 EXPOSE $PORT
 
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD [ "node", "index.js" ]
