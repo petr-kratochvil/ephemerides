@@ -5,8 +5,8 @@ export function addDays(date: JsonDate, days: number): JsonDate {
   originDate.setDate(originDate.getDate() + days);
   return {
     year: originDate.getFullYear(),
-    month: originDate.getMonth(),
-    day: originDate.getDay(),
+    month: originDate.getMonth() + 1,
+    day: originDate.getDate(),
     hour: date.hour,
   };
 }
