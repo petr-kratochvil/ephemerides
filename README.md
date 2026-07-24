@@ -27,3 +27,9 @@ The API is now available at `http://localhost:3601`.
 ## `sweph` npm package
 
 The [sweph](https://www.npmjs.com/package/sweph) npm package is compiled using [node-gyp](https://www.npmjs.com/package/node-gyp) during package instalL, so the actual package in `node_modules` is platform-dependent and not portable.
+
+## License
+
+AGPL-3.0-or-later — see [`LICENSE`](./LICENSE).
+
+This project links the [Swiss Ephemeris](https://www.astro.com/swisseph/) library, which Astrodienst dual-licenses under AGPL or a paid Professional license. Since this project doesn't hold a Professional license, it (and any public deployment of it) must be licensed under AGPL to comply with that requirement.
