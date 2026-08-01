@@ -1,0 +1,20 @@
+services:
+  ephemerides:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3601:3601"
+    volumes:
+      # Bind-mount the project so edits on the host are live (watched by nodemon)
+      - .:/home/node/app
+      # Shadow node_modules with a Docker-managed named volume so the
+      # container's Linux-compiled native deps (sweph) never touch the
+      # host's node_modules and overwrite a macOS build. Persists across
+      # `docker compose up`/`down`, seeded once from the image's npm ci.
+      - ephemerides_node_modules:/home/node/app/node_modules
+
+volumes:
+  ephemerides_node_modules:
+    # Explicit volume name (without this, docker-compose prefixes it with the project name)
+    name: ephemerides_node_modules
