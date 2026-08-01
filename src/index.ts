@@ -1,5 +1,5 @@
 import sweph from "sweph";
-import express, { Express, Request, Response } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import { getPosition } from "./endpoints/getPosition";
 import { gethouses } from "./endpoints/getHouses";
 import { getTransits } from "./endpoints/getTransits";
@@ -43,6 +43,15 @@ app.post("/position", getPosition);
 app.post("/houses", gethouses);
 
 app.post("/transits", getTransits);
+
+// Malformed JSON bodies (thrown synchronously by express.json()) land here
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof SyntaxError && "body" in err) {
+    res.status(400).json({ error: "Request body is not valid JSON" });
+    return;
+  }
+  next(err);
+});
 
 // Only run app.listen when running locally.
 // Vercel handles the server binding automatically in production.

@@ -32,6 +32,8 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/PositionResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
         "500":
           $ref: "#/components/responses/SwephErrorResponse"
 
@@ -50,6 +52,8 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/HousesResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
         "500":
           $ref: "#/components/responses/SwephErrorResponse"
 
@@ -67,6 +71,8 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/TransitsResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
         "500":
           $ref: "#/components/responses/SwephErrorResponse"
 
@@ -148,6 +154,13 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/FormattedSwephError"
+
+    ValidationErrorResponse:
+      description: Request body failed validation
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationError"
 
   schemas:
     JsonDate:
@@ -334,3 +347,11 @@ components:
         error:
           type: string
           description: Error message from the Swiss Ephemeris library
+
+    ValidationError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable description of the validation error
