@@ -9,7 +9,8 @@
     "test": "node --require ts-node/register --test \"src/**/*.test.ts\"",
     "docker:build": "docker build -t ephemerides .",
     "docker:run": "docker run --rm -p 3601:3601 ephemerides",
-    "docker:dev": "docker compose -f docker-compose.dev.yml up --build"
+    "docker:dev": "docker compose -f docker-compose.dev.yml up --build",
+    "docker:dev:reset": "docker compose -f docker-compose.dev.yml down -v"
   },
   "author": "Petr Kratochvíl",
   "license": "AGPL-3.0-or-later",
