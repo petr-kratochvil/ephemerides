@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Express API wrapping the Swiss Ephemeris library for planetary positions, houses, and transit aspects.",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "start": "node build/index.js",
-    "dev": "npx nodemon",
+    "dev": "nodemon",
     "test": "node --require ts-node/register --test \"src/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
     "docker:build": "docker build -t ephemerides .",
     "docker:run": "docker run --rm -p 3601:3601 ephemerides",
     "docker:dev": "docker compose -f docker-compose.dev.yml up --build",
