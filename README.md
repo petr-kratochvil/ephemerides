@@ -2,11 +2,21 @@
 
 Express API wrapping the [Swiss Ephemeris](https://www.astro.com/swisseph/) library — planetary body positions, house cusps/chart points, and transit aspects.
 
-Endpoints: `POST /position`, `POST /houses`, `POST /transits`. Full request/response shapes are in [`openapi.yaml`](./openapi.yaml).
+Frontend app (React/Vite) consuming this API: [https://github.com/petr-kratochvil/astro1](https://github.com/petr-kratochvil/astro1).
 
-Deployed on Vercel via `api/index.ts` (see `vercel.json`); the same Express app also runs standalone from `src/index.ts` for local dev and Docker.
+## API
 
-## Run locally (Node)
+Endpoints:
+
+- `POST /position`: main celestial body objects position for a given timestamp
+- `POST /houses`: house cusps and chart points position for a given timestamp and geographical coordinates
+- `POST /transits`: list of transits for a given base (natal) timestamp, base (natal) coordinates and transit timestamp
+
+Full request/response shapes are in [`openapi.yaml`](./openapi.yaml).
+
+## How to run
+
+### Run locally (Node)
 
 ```bash
 npm install
@@ -15,7 +25,7 @@ npm run dev     # ts-node + nodemon, watches src/
 
 Server listens on `http://localhost:3601` (override with `PORT`).
 
-## Run with Docker
+### Run with Docker
 
 ```bash
 npm run docker:build
@@ -23,6 +33,10 @@ npm run docker:run
 ```
 
 The API is now available at `http://localhost:3601`.
+
+### Vercel deployment
+
+Deployed on Vercel via `api/index.ts` (see `vercel.json`); the same Express app also runs standalone from `src/index.ts` for local dev and Docker.
 
 ## `sweph` npm package
 
