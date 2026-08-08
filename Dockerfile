@@ -1,6 +1,6 @@
 FROM node:24-alpine
 
-RUN apk add python3 build-base
+RUN apk add python3 build-base nodejs-dev
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
@@ -10,7 +10,8 @@ COPY package*.json ./
 
 USER node
 
-RUN npm ci
+RUN --mount=type=cache,id=npm-cache,target=/home/node/.npm,uid=1000,gid=1000 \
+npm ci --cache /home/node/.npm
 
 COPY --chown=node:node tsconfig.json ./
 COPY --chown=node:node src/ ./src/
