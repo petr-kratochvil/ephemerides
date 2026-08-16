@@ -1,4 +1,5 @@
 import sweph from "sweph";
+import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
 import path from "path";
 import { getPosition } from "./endpoints/getPosition";
@@ -8,31 +9,29 @@ import { getTransits } from "./endpoints/getTransits";
 const app: Express = express();
 const port = process.env.PORT || 3601;
 
-const swephPath = process.env.SWISSEPH_PATH || path.join(__dirname, "../swisseph_files");
+const swephPath =
+  process.env.SWISSEPH_PATH || path.join(__dirname, "../swisseph_files");
 // empty path will fallback to SEFLG_MOSEPH - Moshier ephemeris
 sweph.set_ephe_path(swephPath || "");
 
-// Parse JSON request body
-app.use(express.json());
+// Public API: any frontend may call it. No cookies/credentials are involved,
+// so a static "*" origin is enough (and needs no Vary: Origin).
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+    maxAge: 86400,
+  }),
+);
 
-// Handle OPTIONS preflight requests
-app.use((req, res, next) => {
-  const origin =
-    typeof req.headers.origin === "string" ? req.headers.origin : "*";
-
-  res.setHeader("Access-Control-Allow-Origin", origin);
-  res.setHeader("Vary", "Origin");
-
-  if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    res.writeHead(204);
-    res.end();
-    return;
-  }
-
+app.use((_req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
   next();
 });
+
+// Parse JSON request body
+app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Ephemerides express server /");

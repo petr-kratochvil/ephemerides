@@ -16,6 +16,7 @@
   "author": "Petr Kratochvíl",
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.16",
     "nodemon": "^3.0.3",
@@ -23,6 +24,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^4.18.2",
     "sweph": "^2.10.3-3"
   }
