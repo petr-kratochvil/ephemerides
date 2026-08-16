@@ -1,5 +1,6 @@
 import sweph from "sweph";
 import express, { Express, NextFunction, Request, Response } from "express";
+import path from "path";
 import { getPosition } from "./endpoints/getPosition";
 import { gethouses } from "./endpoints/getHouses";
 import { getTransits } from "./endpoints/getTransits";
@@ -7,10 +8,9 @@ import { getTransits } from "./endpoints/getTransits";
 const app: Express = express();
 const port = process.env.PORT || 3601;
 
-// path to ephemeris data
-// For flag SEFLG_MOSEPH, path null can be used
-// sweph.set_ephe_path('null');
-sweph.set_ephe_path(__dirname + "/../swisseph_files");
+const swephPath = process.env.SWISSEPH_PATH || path.join(__dirname, "../swisseph_files");
+// empty path will fallback to SEFLG_MOSEPH - Moshier ephemeris
+sweph.set_ephe_path(swephPath || "");
 
 // Parse JSON request body
 app.use(express.json());
@@ -53,9 +53,9 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   next(err);
 });
 
-// Only run app.listen when running locally.
+// Only run app.listen when not running in Vercel (Serverless).
 // Vercel handles the server binding automatically in production.
-if (process.env.NODE_ENV !== "production") {
+if (!process.env.VERCEL) {
   const server = app.listen(port, () => {
     console.log(`[Ephemerides]: Server is running at http://localhost:${port}`);
   });
