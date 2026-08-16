@@ -2,6 +2,8 @@
   "name": "ephemerides",
   "version": "1.0.0",
   "description": "Express API wrapping the Swiss Ephemeris library for planetary positions, houses, and transit aspects.",
+  "author": "Petr Kratochvíl",
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "build": "tsc",
     "start": "node build/index.js",
@@ -13,12 +15,13 @@
     "docker:dev": "docker compose -f docker-compose.dev.yml up --build",
     "docker:dev:reset": "docker compose -f docker-compose.dev.yml down -v"
   },
-  "author": "Petr Kratochvíl",
-  "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=24"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.16",
+    "@types/node": "^24.13.3",
     "nodemon": "^3.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
