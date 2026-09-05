@@ -14,6 +14,14 @@ Endpoints:
 
 Full request/response shapes are in [`openapi.yaml`](./openapi.yaml).
 
+### Why POST for data fetching
+
+All calculation endpoints use POST methods with JSON payloads instead of standard GET with query parameters. 
+
+This is a tradeoff between HTTP caching and security:
+1. Privacy & Security: Birth dates and geographical coordinates are sensitive personal data. Using GET would expose them in plaintext into browser history, CDN logs, and server access logs. POST bodies are encrypted end-to-end via HTTPS.
+2. Caching Strategy: While this bypasses default caching mechanisms, the application is designed to scale horizontally by implementing a custom application-level cache (e.g., Redis).
+
 ## How to run
 
 ### Run locally (Node)
