@@ -28,7 +28,7 @@ This is a tradeoff between HTTP caching and security:
 
 ```bash
 npm install
-npm run dev     # ts-node + nodemon, watches src/
+npm run dev     # tsx + nodemon, watches src/
 ```
 
 Server listens on `http://localhost:3601` (override with `PORT`).
