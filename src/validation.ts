@@ -1,4 +1,4 @@
-import { JsonDate, GeoCoordinates } from "./types";
+import { z } from "zod";
 
 export class ValidationError extends Error {
   constructor(message: string) {
@@ -7,45 +7,49 @@ export class ValidationError extends Error {
   }
 }
 
-function isFiniteNumber(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value);
+export const jsonDateSchema = z.object({
+  year: z.int().min(1800).max(2399),
+  month: z.int().min(1).max(12),
+  day: z.int().min(1).max(31),
+  hour: z.number().min(0).lt(24),
+});
+
+export const geoCoordinatesSchema = z.object({
+  lat: z.number().min(-90).max(90),
+  lon: z.number().min(-180).max(180),
+});
+
+// Request body schemas
+export const positionBodySchema = jsonDateSchema;
+
+export const housesBodySchema = z.object({
+  baseDate: jsonDateSchema,
+  baseDateCoordinates: geoCoordinatesSchema.optional(),
+});
+
+export const transitsBodySchema = z.object({
+  baseDate: jsonDateSchema,
+  transitDate: jsonDateSchema,
+  baseDateCoordinates: geoCoordinatesSchema.optional(),
+});
+
+function formatZodError(error: z.ZodError): string {
+  return error.issues
+    .map((issue) =>
+      issue.path.length
+        ? `${issue.path.join(".")}: ${issue.message}`
+        : issue.message,
+    )
+    .join("; ");
 }
 
-export function assertJsonDate(
-  value: unknown,
-  fieldName: string,
-): asserts value is JsonDate {
-  const date = value as Partial<JsonDate> | null | undefined;
-  if (
-    typeof date !== "object" ||
-    date === null ||
-    !isFiniteNumber(date.year) ||
-    !isFiniteNumber(date.month) ||
-    !isFiniteNumber(date.day) ||
-    !isFiniteNumber(date.hour)
-  ) {
-    throw new ValidationError(
-      `${fieldName} must be an object with numeric year, month, day, and hour`,
-    );
+export function parseBody<S extends z.ZodType>(
+  schema: S,
+  body: unknown,
+): z.infer<S> {
+  const result = schema.safeParse(body);
+  if (!result.success) {
+    throw new ValidationError(formatZodError(result.error));
   }
-}
-
-export function assertGeoCoordinatesIfPresent(
-  value: unknown,
-  fieldName: string,
-): asserts value is GeoCoordinates | undefined {
-  if (value === undefined) {
-    return;
-  }
-  const coords = value as Partial<GeoCoordinates> | null;
-  if (
-    typeof coords !== "object" ||
-    coords === null ||
-    !isFiniteNumber(coords.lat) ||
-    !isFiniteNumber(coords.lon)
-  ) {
-    throw new ValidationError(
-      `${fieldName}, if provided, must be an object with numeric lat and lon`,
-    );
-  }
+  return result.data;
 }

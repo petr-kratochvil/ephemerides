@@ -2,8 +2,7 @@ openapi: 3.0.3
 info:
   title: Ephemerides API
   description: >-
-    Astrological ephemeris calculations (planet positions, houses, transits)
-    backed by the Swiss Ephemeris (`sweph`) library.
+    Astrological ephemeris calculations
   version: "1.0.0"
 servers:
   - url: http://localhost:3601
@@ -41,12 +40,6 @@ paths:
     post:
       summary: Get house cusps and chart points (AC/IC/DC/MC/vertex) for a date
       operationId: getHouses
-      description: >-
-        Not currently called by the frontend; kept for future use. Body
-        naming mirrors POST /transits (`baseDate` / `baseDateCoordinates`).
-        `baseDateCoordinates` is optional; when omitted, houses are computed
-        for the default location configured in `swephConfig` (Prague:
-        lat 50.075, lon 14.437).
       requestBody:
         $ref: "#/components/requestBodies/HousesBody"
       responses:
@@ -61,11 +54,6 @@ paths:
     post:
       summary: Get aspects between a transit date's planets and a base chart
       operationId: getTransits
-      description: >-
-        Computes the base chart's planet positions plus its houses (excluding
-        the angular house cusps 1/4/7/10, which duplicate AC/IC/DC/MC), then
-        finds aspects between the transit date's planet positions and that
-        base chart.
       requestBody:
         $ref: "#/components/requestBodies/TransitsBody"
       responses:
@@ -165,11 +153,18 @@ components:
   schemas:
     JsonDate:
       type: object
-      description: Calendar date/time (Gregorian), UT, used as input to ephemeris calculations.
+      description: >-
+        Calendar date (Gregorian) and time (UTC), used as input to ephemeris
+        calculations. Month and day are 1-based. Hour is fractional and 24-based (e.g. 13.5 = 13:30).
       required: [year, month, day, hour]
       properties:
         year:
           type: integer
+          description: >-
+            Bounded by the coverage of the bundled Swiss Ephemeris data files
+            (1800 AD - 2399 AD).
+          minimum: 1800
+          maximum: 2399
           example: 2024
         month:
           type: integer
@@ -183,18 +178,25 @@ components:
           example: 6
         hour:
           type: number
-          description: Decimal hour (e.g. 13.5 = 13:30)
+          minimum: 0
+          maximum: 24
+          exclusiveMaximum: true
           example: 13
 
     GeoCoordinates:
       type: object
+      description: Geographic position in decimal degrees.
       required: [lat, lon]
       properties:
         lat:
           type: number
+          minimum: -90
+          maximum: 90
           example: 50.075
         lon:
           type: number
+          minimum: -180
+          maximum: 180
           example: 14.437
 
     BodyId:
@@ -229,15 +231,19 @@ components:
       properties:
         position:
           type: number
-          description: Raw ecliptic longitude in degrees [0, 360)
+          description: Position in degrees (starting at Aries)
+          minimum: 0
+          maximum: 360
+          exclusiveMaximum: true
         sign:
           type: integer
-          description: Zodiac sign number, 1 (Aries) through 12 (Pisces)
+          description: Sign number, 1-based
           minimum: 1
           maximum: 12
         degrees:
           type: integer
-          description: Degrees within the sign [0, 29]
+          minimum: 0
+          maximum: 29
         minutes:
           type: integer
           minimum: 0
@@ -248,7 +254,7 @@ components:
           maximum: 59
         name:
           type: string
-          description: Human-readable name (planet name, house ordinal, or point name)
+          description: Human-readable name (planet name, house number, or point name)
 
     BodyPosition:
       allOf:
@@ -263,7 +269,7 @@ components:
               $ref: "#/components/schemas/BodyId"
             speed:
               type: number
-              description: Daily motion in degrees; present because SEFLG_SPEED is always used
+              description: Daily motion in degrees
             retrograde:
               type: boolean
               description: "true if speed < 0"
@@ -307,9 +313,7 @@ components:
     AspectWithPositions:
       type: object
       description: >-
-        An astrological aspect found between two chart positions. `pos1` and
-        `pos2` carry the full formatted position objects (body/house/point) of
-        the transit and base-chart members of the pair, respectively.
+        An astrological aspect found between two chart positions.
       required: [name, orb, pos1, pos2]
       properties:
         name:
@@ -354,4 +358,6 @@ components:
       properties:
         error:
           type: string
-          description: Human-readable description of the validation error
+          description: >-
+            Human-readable description of the validation error.
+          example: "baseDate.year: Invalid input: expected number, received string"

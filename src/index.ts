@@ -14,8 +14,7 @@ const swephPath =
 // empty path will fallback to SEFLG_MOSEPH - Moshier ephemeris
 sweph.set_ephe_path(swephPath || "");
 
-// Public API: any frontend may call it. No cookies/credentials are involved,
-// so a static "*" origin is enough (and needs no Vary: Origin).
+// Public API: any frontend may call it
 app.use(
   cors({
     origin: "*",
@@ -43,7 +42,7 @@ app.post("/houses", gethouses);
 
 app.post("/transits", getTransits);
 
-// Malformed JSON bodies (thrown synchronously by express.json()) land here
+// Handle invalid JSON in request body
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof SyntaxError && "body" in err) {
     res.status(400).json({ error: "Request body is not valid JSON" });

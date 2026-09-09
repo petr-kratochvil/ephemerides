@@ -5,23 +5,15 @@ import {
   formatSwephError,
 } from "../format/formatPosition";
 import { SwephError } from "../types";
-import {
-  assertGeoCoordinatesIfPresent,
-  assertJsonDate,
-  ValidationError,
-} from "../validation";
+import { housesBodySchema, parseBody, ValidationError } from "../validation";
 
 export function gethouses(req: Request, res: Response) {
   try {
-    assertJsonDate(req.body.baseDate, "baseDate");
-    assertGeoCoordinatesIfPresent(
-      req.body.baseDateCoordinates,
-      "baseDateCoordinates",
+    const { baseDate, baseDateCoordinates } = parseBody(
+      housesBodySchema,
+      req.body,
     );
-    const housesAndPoints = sweph_houses(
-      req.body.baseDate,
-      req.body.baseDateCoordinates,
-    );
+    const housesAndPoints = sweph_houses(baseDate, baseDateCoordinates);
     res.json(housesAndPoints.map(formatObjectPosition));
   } catch (error) {
     if (error instanceof ValidationError) {

@@ -1,16 +1,10 @@
+import { z } from "zod";
 import { swephConfig } from "./config";
+import { geoCoordinatesSchema, jsonDateSchema } from "./validation";
 
-export interface JsonDate {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-}
-
-export interface GeoCoordinates {
-  lat: number;
-  lon: number;
-}
+// Infered types from zod schemas
+export type JsonDate = z.infer<typeof jsonDateSchema>;
+export type GeoCoordinates = z.infer<typeof geoCoordinatesSchema>;
 
 export type BodyId = (typeof swephConfig.bodies)[number];
 export type PointName = (typeof swephConfig.points)[number];

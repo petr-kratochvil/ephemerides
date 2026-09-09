@@ -29,7 +29,8 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^4.18.2",
-    "sweph": "^2.10.3-3"
+    "sweph": "^2.10.3-3",
+    "zod": "^4.5.4"
   },
   "allowScripts": {
     "fsevents@2.3.3": true,

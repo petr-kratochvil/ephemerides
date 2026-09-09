@@ -5,12 +5,12 @@ import {
   formatSwephError,
 } from "../format/formatPosition";
 import { SwephError } from "../types";
-import { assertJsonDate, ValidationError } from "../validation";
+import { parseBody, positionBodySchema, ValidationError } from "../validation";
 
 export function getPosition(req: Request, res: Response) {
   try {
-    assertJsonDate(req.body, "body");
-    const position = sweph_position(req.body);
+    const date = parseBody(positionBodySchema, req.body);
+    const position = sweph_position(date);
     res.json(position.map((p) => formatObjectPosition(p)));
   } catch (error) {
     if (error instanceof ValidationError) {
