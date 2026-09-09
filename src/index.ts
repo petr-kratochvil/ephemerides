@@ -2,6 +2,7 @@ import sweph from "sweph";
 import cors from "cors";
 import express, { Express, NextFunction, Request, Response } from "express";
 import path from "path";
+import morgan from "morgan"
 import { getPosition } from "./endpoints/getPosition";
 import { gethouses } from "./endpoints/getHouses";
 import { getTransits } from "./endpoints/getTransits";
@@ -13,6 +14,14 @@ const swephPath =
   process.env.SWISSEPH_PATH || path.join(__dirname, "../swisseph_files");
 // empty path will fallback to SEFLG_MOSEPH - Moshier ephemeris
 sweph.set_ephe_path(swephPath || "");
+
+// Logging
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan("dev"));
+} else if (!process.env.VERCEL) {
+  // Skip for Vercel (it provides its own logging)
+  app.use(morgan("combined"));
+}
 
 // Public API: any frontend may call it
 app.use(
