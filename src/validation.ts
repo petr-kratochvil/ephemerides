@@ -22,6 +22,8 @@ export const geoCoordinatesSchema = z.object({
 // Request body schemas
 export const positionBodySchema = jsonDateSchema;
 
+export const stationsBodySchema = jsonDateSchema;
+
 export const housesBodySchema = z.object({
   baseDate: jsonDateSchema,
   baseDateCoordinates: geoCoordinatesSchema.optional(),

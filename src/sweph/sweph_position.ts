@@ -31,12 +31,21 @@ export function sweph_get_julday(date: JsonDate): number {
   );
 }
 
+export function sweph_get_date(julday_ut: number): JsonDate {
+  return sweph.revjul(julday_ut, constants.SE_GREG_CAL);
+}
+
 export function sweph_body_position(
   julday_ut: number,
   body: BodyId,
 ): EphObjectPosition {
   const calc = sweph.calc_ut(julday_ut, body, swephConfig.flag);
-  if (calc.error) {
+  // A negative flag means the calculation failed. A message with a non-negative flag
+  // is only a warning - typically that the date lies outside the bundled ephemeris
+  // files, where Swiss Ephemeris silently falls back to its built-in Moshier
+  // ephemeris. The station search does reach such dates, as it samples up to about
+  // two years around the requested one.
+  if (calc.flag < 0) {
     throw new SwephCalculationError(body, calc.error);
   }
   return {

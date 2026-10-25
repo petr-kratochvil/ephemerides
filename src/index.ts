@@ -7,6 +7,7 @@ import helmet from "helmet";
 import { getPosition } from "./endpoints/getPosition";
 import { gethouses } from "./endpoints/getHouses";
 import { getTransits } from "./endpoints/getTransits";
+import { getStations } from "./endpoints/getStations";
 
 const app: Express = express();
 const port = process.env.PORT || 3601;
@@ -61,6 +62,8 @@ app.post("/position", getPosition);
 app.post("/houses", gethouses);
 
 app.post("/transits", getTransits);
+
+app.post("/stations", getStations);
 
 // Handle invalid JSON in request body
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {

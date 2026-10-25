@@ -64,6 +64,31 @@ paths:
         "500":
           $ref: "#/components/responses/SwephErrorResponse"
 
+  /stations:
+    post:
+      summary: Get the nearest stations before and after a date for each planet
+      description: >-
+        A station is the moment a planet turns retrograde or direct, i.e. when its
+        ecliptic longitude speed crosses zero. Returned times are accurate to roughly
+        one hour; the longitude is the exact one at the returned time, and barely
+        moves around a station anyway. Sun and Moon are omitted, they never turn
+        retrograde.
+
+
+        The search samples the ephemeris up to about two years around the requested
+        date, so close to the edges of the supported year range it falls back to the
+        Moshier ephemeris, which is still well within the precision of the result.
+      operationId: getStations
+      requestBody:
+        $ref: "#/components/requestBodies/JsonDateBody"
+      responses:
+        "200":
+          $ref: "#/components/responses/StationsResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "500":
+          $ref: "#/components/responses/SwephErrorResponse"
+
 components:
   requestBodies:
     JsonDateBody:
@@ -135,6 +160,17 @@ components:
             type: array
             items:
               $ref: "#/components/schemas/AspectWithPositions"
+
+    StationsResponse:
+      description: >-
+        Array of per-planet station pairs, in the order Mercury, Venus, Mars,
+        Jupiter, Saturn, Uranus, Neptune, Pluto
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/BodyStations"
 
     SwephErrorResponse:
       description: Calculation error from the Swiss Ephemeris library
@@ -341,6 +377,73 @@ components:
           $ref: "#/components/schemas/FormattedObjectPosition"
         pos2:
           $ref: "#/components/schemas/FormattedObjectPosition"
+
+    Station:
+      type: object
+      description: >-
+        A moment when a planet changes the direction of its motion, together with the
+        ecliptic longitude it stands at, formatted as in the /position response.
+      required:
+        [retrograde, date, position, sign, degrees, minutes, seconds]
+      properties:
+        retrograde:
+          type: boolean
+          description: >-
+            true if the planet turns retrograde here (its speed crosses zero
+            downwards), false if it turns direct again
+        date:
+          $ref: "#/components/schemas/JsonDate"
+        position:
+          type: number
+          description: Position in degrees (starting at Aries)
+          minimum: 0
+          maximum: 360
+          exclusiveMaximum: true
+        sign:
+          type: integer
+          description: Sign number, 1-based
+          minimum: 1
+          maximum: 12
+        degrees:
+          type: integer
+          minimum: 0
+          maximum: 29
+        minutes:
+          type: integer
+          minimum: 0
+          maximum: 59
+        seconds:
+          type: integer
+          minimum: 0
+          maximum: 59
+
+    BodyStations:
+      type: object
+      description: >-
+        The stations of one planet surrounding the requested date. Both are null only
+        if the planet has no station within a full retrograde cycle, which cannot
+        happen for the planets listed in the configuration.
+      required: [type, bodyId, name, previous, next]
+      properties:
+        type:
+          type: string
+          enum: [body]
+        bodyId:
+          $ref: "#/components/schemas/BodyId"
+        name:
+          type: string
+          description: Planet name
+          example: Mercury
+        previous:
+          allOf:
+            - $ref: "#/components/schemas/Station"
+          nullable: true
+          description: The last station before the requested date
+        next:
+          allOf:
+            - $ref: "#/components/schemas/Station"
+          nullable: true
+          description: The first station after the requested date
 
     FormattedSwephError:
       type: object

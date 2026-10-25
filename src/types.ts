@@ -66,6 +66,30 @@ export interface AspectWithPositions<
   pos2: T;
 }
 
+// Stations - the moments when a planet turns retrograde or direct
+
+// Per-planet search parameters, see `stationsConfig` in config.ts
+export interface StationPlanet {
+  bodyId: BodyId;
+  scanStep: number;
+  retrogradeDays: [number, number];
+  directDays: [number, number];
+}
+
+export interface Station extends FormattedPosition {
+  // true when the planet turns retrograde here, false when it turns direct again
+  retrograde: boolean;
+  date: JsonDate;
+}
+
+export interface BodyStations {
+  type: "body";
+  bodyId: BodyId;
+  name: string;
+  previous: Station | null;
+  next: Station | null;
+}
+
 // Sweph errors
 
 export interface SwephError {

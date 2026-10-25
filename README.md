@@ -11,6 +11,7 @@ Endpoints:
 - `POST /position`: main celestial body objects position for a given timestamp
 - `POST /houses`: house cusps and chart points position for a given timestamp and geographical coordinates
 - `POST /transits`: list of transits for a given base (natal) timestamp, base (natal) coordinates and transit timestamp
+- `POST /stations`: the nearest station before and after a given timestamp for each planet from Mercury to Pluto
 
 Full request/response shapes are in [`openapi.yaml`](./openapi.yaml).
 
